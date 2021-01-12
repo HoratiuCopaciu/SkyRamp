@@ -63,10 +63,3 @@ enum HttpStatusCode: RawRepresentable {
         }
     }
 }
-
-extension URLResponse {
-    var networkStatus: HttpStatusCode? {
-        guard let httpResponse = self as? HTTPURLResponse else { return nil }
-        return HttpStatusCode(rawValue: httpResponse.statusCode)
-    }
-}

@@ -98,9 +98,7 @@ extension NetworkingService {
             return .failure(.invalidResponse)
         }
         
-        if status == .ok {
-            return .success(data ?? Data())
-        } else {
+        guard status == .ok, let data = data else {
             switch status {
             case .client:
                 return .failure(.client(status: status, data: data))
@@ -110,5 +108,14 @@ extension NetworkingService {
                 return .failure(.invalidResponse)
             }
         }
+        
+        return .success(data)
+    }
+}
+
+private extension URLResponse {
+    var networkStatus: HttpStatusCode? {
+        guard let httpResponse = self as? HTTPURLResponse else { return nil }
+        return HttpStatusCode(rawValue: httpResponse.statusCode)
     }
 }

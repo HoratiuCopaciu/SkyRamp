@@ -12,7 +12,7 @@ enum HttpMethod: String {
     case get = "GET"
     case post = "POST"
     case put = "PUT"
-    case DELETE = "DELETE"
+    case delete = "DELETE"
 }
 
 struct HttpBody {
@@ -54,8 +54,8 @@ struct NetworkRequest: RequestConvertible {
     let headers: [HTTPHeader]
     let body: HttpBody?
     
-    init(endpoint: Endpoint, path: String = "", method: HttpMethod = .get, headers: [HTTPHeader] = [], body: HttpBody? = nil) {
-        self.url = endpoint.url
+    init(url: URL, path: String = "", method: HttpMethod = .get, headers: [HTTPHeader] = [], body: HttpBody? = nil) {
+        self.url = url
         self.path = path
         self.method = method
         self.headers = headers
