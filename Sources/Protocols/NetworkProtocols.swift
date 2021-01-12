@@ -8,11 +8,6 @@
 
 import Foundation
 
-public protocol ValueDecoder {
-    func decode<T>(_ type: T.Type, from json: JSONValue) throws -> T
-    static func decode<T>(_ type: T.Type, from data: Data) throws -> T
-}
-
 public protocol RequestAdapter {
     func adapt(_ request: URLRequest) throws -> URLRequest
 }

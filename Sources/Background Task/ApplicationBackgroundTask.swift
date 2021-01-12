@@ -11,7 +11,7 @@ import UIKit
 public final class ApplicationBackgroundTask: NSObject, BackgroundTask {
     
     let application: UIApplication
-    private(set) var identifier: Int
+    private(set) public var identifier: Int
     private var taskIdentifier: UIBackgroundTaskIdentifier
     
     private init(application: UIApplication) {

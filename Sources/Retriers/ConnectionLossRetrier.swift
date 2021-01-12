@@ -9,7 +9,7 @@ import Foundation
 
 public class ConnectionLossRetrier: RequestRetrier {
     
-    func shouldRetry(_ session: URLSession, request: URLRequest, for error: Error, completion: @escaping (Bool) -> Void) {
+    public func shouldRetry(_ session: URLSession, request: URLRequest, for error: Error, completion: @escaping (Bool) -> Void) {
         if let networkError = error as NSError?,
             networkError.isNetworkConnectionError() || networkError.isNetworkTimeOutError() {
             completion(true)

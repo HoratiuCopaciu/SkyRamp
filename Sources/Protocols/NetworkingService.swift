@@ -99,7 +99,7 @@ public extension NetworkingService {
         }
         
         if status == .ok, let data = data {
-            return .success(payload)
+            return .success(data)
         }
         
         switch status {
@@ -113,7 +113,7 @@ public extension NetworkingService {
     }
 }
 
-private extension URLResponse {
+extension URLResponse {
     var networkStatus: HttpStatusCode? {
         guard let httpResponse = self as? HTTPURLResponse else { return nil }
         return HttpStatusCode(rawValue: httpResponse.statusCode)

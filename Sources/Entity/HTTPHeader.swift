@@ -9,8 +9,8 @@
 import Foundation
 
 public struct HTTPHeader: Hashable {
-    let name: String
-    let value: String
+    public let name: String
+    public let value: String
     
     init(name: String, value: String) {
         self.name = name

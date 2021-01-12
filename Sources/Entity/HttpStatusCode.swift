@@ -9,13 +9,13 @@
 import Foundation
 
 public enum HttpStatusCode: RawRepresentable {
-    typealias RawValue = Int
+    public typealias RawValue = Int
     
     case ok
     case client(Int)
     case server(Int)
     
-    var rawValue: Int {
+    public var rawValue: Int {
         switch self {
         case .ok:
             return 200
@@ -48,7 +48,7 @@ public enum HttpStatusCode: RawRepresentable {
         return true
     }
     
-    init?(rawValue: Int) {
+    public init?(rawValue: Int) {
         switch rawValue {
         case 100...199, 201...399:
             return nil

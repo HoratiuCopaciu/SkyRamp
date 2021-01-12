@@ -7,7 +7,7 @@
 
 import Foundation
 
-public @objc protocol BackgroundTask: class {
+@objc public protocol BackgroundTask: class {
     var identifier: Int { get }
     
     static func executeTask() -> BackgroundTask
