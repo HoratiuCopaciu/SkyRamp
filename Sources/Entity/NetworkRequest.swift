@@ -8,28 +8,28 @@
 
 import Foundation
 
-enum HttpMethod: String {
+public enum HttpMethod: String {
     case get = "GET"
     case post = "POST"
     case put = "PUT"
     case delete = "DELETE"
 }
 
-struct HttpBody {
-    enum Encoder {
+public struct HttpBody {
+    public enum Encoder {
         case json
         case percent
     }
 
-    let body: [String: Any]
-    let encoder: Encoder
+    public let body: [String: Any]
+    public let encoder: Encoder
     
-    init(body: [String: Any], encoder: Encoder = .json) {
+    public init(body: [String: Any], encoder: Encoder = .json) {
         self.body = body
         self.encoder = encoder
     }
     
-    func encode() -> Data? {
+    public func encode() -> Data? {
         switch encoder {
         case .json:
             return try? JSONSerialization.data(withJSONObject: body, options: [])
@@ -47,14 +47,14 @@ struct HttpBody {
     }
 }
 
-struct NetworkRequest: RequestConvertible {
-    let url: URL
-    let path: String
-    let method: HttpMethod
-    let headers: [HTTPHeader]
-    let body: HttpBody?
+public struct NetworkRequest: RequestConvertible {
+    public let url: URL
+    public let path: String
+    public let method: HttpMethod
+    public let headers: [HTTPHeader]
+    public let body: HttpBody?
     
-    init(url: URL, path: String = "", method: HttpMethod = .get, headers: [HTTPHeader] = [], body: HttpBody? = nil) {
+    public init(url: URL, path: String = "", method: HttpMethod = .get, headers: [HTTPHeader] = [], body: HttpBody? = nil) {
         self.url = url
         self.path = path
         self.method = method

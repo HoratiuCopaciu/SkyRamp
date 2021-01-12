@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol NetworkingService {
+public protocol NetworkingService {
     var baseURL: URL { get }
     var session: URLSession { get }
     var adapter: RequestAdapter? { get }
@@ -15,7 +15,7 @@ protocol NetworkingService {
     var backgroundTaskType: BackgroundTask.Type? { get }
 }
 
-extension NetworkingService {
+public extension NetworkingService {
     func execute<Output>(_ request: RequestConvertible, transform: @escaping (NetworkResponse<Data>) throws -> Output, completion: @escaping (NetworkResponse<Output>) -> Void) {
         
         self.execute(request) { response in

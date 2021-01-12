@@ -7,14 +7,14 @@
 
 import Foundation
 
-@objc protocol BackgroundTask: class {
+public @objc protocol BackgroundTask: class {
     var identifier: Int { get }
     
     static func executeTask() -> BackgroundTask
     func end()
 }
 
-extension BackgroundTask {
+public extension BackgroundTask {
     static func executeTask(completion: @escaping (BackgroundTask) -> Void) {
         completion(executeTask())
     }

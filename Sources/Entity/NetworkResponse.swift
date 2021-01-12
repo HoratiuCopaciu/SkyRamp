@@ -8,9 +8,9 @@
 
 import Foundation
 
-typealias NetworkResponse<T> = Result<T, NetworkError>
+public typealias NetworkResponse<T> = Result<T, NetworkError>
 
-extension NetworkResponse {
+public extension NetworkResponse {
     var isSuccessful: Bool {
         switch self {
         case .success:
@@ -21,13 +21,13 @@ extension NetworkResponse {
     }
 }
 
-extension NetworkResponse where Success == Void {
+public extension NetworkResponse where Success == Void {
     static var success: Result {
         return .success(())
     }
 }
 
-extension NetworkResponse where Success == Data {
+public extension NetworkResponse where Success == Data {
     
     func getJSON<Value>() throws -> Value {
         do {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct HTTPHeader: Hashable {
+public struct HTTPHeader: Hashable {
     let name: String
     let value: String
     
@@ -18,7 +18,7 @@ struct HTTPHeader: Hashable {
     }
 }
 
-extension HTTPHeader {
+public extension HTTPHeader {
     
     static func authorization(password: String) -> HTTPHeader {
         return authorization(userName: "", password: password)
@@ -38,7 +38,7 @@ extension HTTPHeader {
     }
 }
 
-extension HTTPHeader {
+public extension HTTPHeader {
     
     enum ContentType {
         case none

@@ -8,20 +8,20 @@
 
 import Foundation
 
-protocol ValueDecoder {
+public protocol ValueDecoder {
     func decode<T>(_ type: T.Type, from json: JSONValue) throws -> T
     static func decode<T>(_ type: T.Type, from data: Data) throws -> T
 }
 
-protocol RequestAdapter {
+public protocol RequestAdapter {
     func adapt(_ request: URLRequest) throws -> URLRequest
 }
 
-protocol RequestRetrier {
+public protocol RequestRetrier {
     func shouldRetry(_ session: URLSession, request: URLRequest, for error: Error, completion: @escaping (Bool) -> Void)
 }
 
-protocol RequestConvertible {
+public protocol RequestConvertible {
     var path: String { get }
     var method: HttpMethod { get }
     var headers: [HTTPHeader] { get }
@@ -29,7 +29,7 @@ protocol RequestConvertible {
     func asURLRequest(url: URL) throws -> URLRequest
 }
 
-extension RequestConvertible {
+public extension RequestConvertible {
     
     func asURLRequest(url: URL) throws -> URLRequest {
         guard let urlWithPath = URL(string: path, relativeTo: url) else {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum HttpStatusCode: RawRepresentable {
+public enum HttpStatusCode: RawRepresentable {
     typealias RawValue = Int
     
     case ok

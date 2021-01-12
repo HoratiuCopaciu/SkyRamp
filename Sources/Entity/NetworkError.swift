@@ -8,14 +8,14 @@
 
 import Foundation
 
-enum NetworkError: Error {
+public enum NetworkError: Error {
     case client(status: HttpStatusCode, data: Data?)
     case server(status: HttpStatusCode, data: Data?)
     case domain(error: Error)
     case connection(error: Error)
 }
 
-extension NetworkError {
+public extension NetworkError {
     
     static let invalidURL: NetworkError = {
         let error = NSError(domain: "NetworkError_invalidURL", code: 0, userInfo: nil)

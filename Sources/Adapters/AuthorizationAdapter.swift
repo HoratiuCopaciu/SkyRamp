@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct AuthorizationAdapter: RequestAdapter {
+public struct AuthorizationAdapter: RequestAdapter {
     
     private let accessToken: String
     
-    init(accessToken: String) {
+    public init(accessToken: String) {
         self.accessToken = accessToken
     }
     
-    func adapt(_ request: URLRequest) throws -> URLRequest {
+    public func adapt(_ request: URLRequest) throws -> URLRequest {
         var request = request
         request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         return request

@@ -8,7 +8,7 @@
 import UIKit
 
 @objcMembers
-final class ApplicationBackgroundTask: NSObject, BackgroundTask {
+public final class ApplicationBackgroundTask: NSObject, BackgroundTask {
     
     let application: UIApplication
     private(set) var identifier: Int
@@ -20,7 +20,7 @@ final class ApplicationBackgroundTask: NSObject, BackgroundTask {
         self.identifier = self.taskIdentifier.rawValue
     }
     
-    class func executeTask() -> BackgroundTask {
+    public class func executeTask() -> BackgroundTask {
         let task = ApplicationBackgroundTask(application: .shared)
         task.execute()
         return task
@@ -33,7 +33,7 @@ final class ApplicationBackgroundTask: NSObject, BackgroundTask {
         identifier = taskIdentifier.rawValue
     }
     
-    func end() {
+    public func end() {
         guard taskIdentifier != .invalid else { return }
         application.endBackgroundTask(taskIdentifier)
         taskIdentifier = .invalid
