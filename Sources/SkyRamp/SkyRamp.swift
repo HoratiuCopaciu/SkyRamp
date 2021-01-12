@@ -1,3 +1,3 @@
-struct Sky_Ramp {
+struct SkyRamp {
     var text = "Hello, World!"
 }

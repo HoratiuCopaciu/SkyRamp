@@ -1,12 +1,12 @@
 import XCTest
-@testable import Sky_Ramp
+@testable import SkyRamp
 
-final class Sky_RampTests: XCTestCase {
+final class SkyRampTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(Sky_Ramp().text, "Hello, World!")
+        XCTAssertEqual(SkyRamp().text, "Hello, World!")
     }
 
     static var allTests = [

@@ -1,7 +1,7 @@
 import XCTest
 
-import Sky_RampTests
+import SkyRampTests
 
 var tests = [XCTestCaseEntry]()
-tests += Sky_RampTests.allTests()
+tests += SkyRampTests.allTests()
 XCTMain(tests)

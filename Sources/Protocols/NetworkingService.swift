@@ -98,18 +98,18 @@ extension NetworkingService {
             return .failure(.invalidResponse)
         }
         
-        guard status == .ok, let data = data else {
-            switch status {
-            case .client:
-                return .failure(.client(status: status, data: data))
-            case .server:
-                return .failure(.server(status: status, data: data))
-            default:
-                return .failure(.invalidResponse)
-            }
+        if status == .ok, let data = data {
+            return .success(payload)
         }
         
-        return .success(data)
+        switch status {
+        case .client:
+            return .failure(.client(status: status, data: data))
+        case .server:
+            return .failure(.server(status: status, data: data))
+        default:
+            return .failure(.invalidResponse)
+        }
     }
 }
 
