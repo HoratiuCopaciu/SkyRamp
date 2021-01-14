@@ -7,7 +7,7 @@
 import Foundation
 import SkyRamp
 
-extension URLSession {
+public extension URLSession {
     
     static var mocksSession: URLSession {
         let configuration = URLSessionConfiguration.default
@@ -18,18 +18,18 @@ extension URLSession {
     }
 }
 
-extension URL {
+public extension URL {
     static let mockURL = URL(string: "https://test.com")!
 }
 
-class TestNetworkingService: NetworkingService {
-    let baseURL: URL
-    let session: URLSession
-    var adapter: RequestAdapter?
-    var retrier: RequestRetrier?
-    var backgroundTaskType: BackgroundTask.Type?
+public class TestNetworkingService: NetworkingService {
+    public let baseURL: URL
+    public let session: URLSession
+    public var adapter: RequestAdapter?
+    public var retrier: RequestRetrier?
+    public var backgroundTaskType: BackgroundTask.Type?
     
-    init() {
+    public init() {
         self.baseURL = URL.mockURL
         self.session = URLSession.mocksSession
         self.adapter = nil

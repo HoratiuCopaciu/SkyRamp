@@ -7,7 +7,7 @@
 
 import XCTest
 
-extension XCTestCase {
+public extension XCTestCase {
     
     func expectation(description: String, _ block: (XCTestExpectation) -> Void, timeout: TimeInterval = 1) {
         let expectation = XCTestExpectation(description: description)

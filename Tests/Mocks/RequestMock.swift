@@ -7,17 +7,17 @@
 
 import Foundation
 
-final class RequestMock: URLProtocol {
+public final class RequestMock: URLProtocol {
     
-    override class func canInit(with request: URLRequest) -> Bool {
+    public override class func canInit(with request: URLRequest) -> Bool {
         return hasResponse(for: request)
     }
     
-    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+    public override class func canonicalRequest(for request: URLRequest) -> URLRequest {
         return request
     }
     
-    override func startLoading() {
+    public override func startLoading() {
         guard let response = RequestMock.response(for: request) else {
             return
         }
@@ -36,12 +36,12 @@ final class RequestMock: URLProtocol {
         }
     }
     
-    override func stopLoading() {
+    public override func stopLoading() {
         
     }
 }
 
-extension RequestMock {
+public extension RequestMock {
     static private var responses: [ResponseMock] = []
     
     static func add(response: ResponseMock) {

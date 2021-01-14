@@ -8,15 +8,15 @@
 import Foundation
 import SkyRamp
 
-struct ResponseMock {
-    let url: URL
-    let httpCode: HttpStatusCode
-    let headers: [HTTPHeader]
-    let result: Result<Data, Error>
-    let delay: TimeInterval
+public struct ResponseMock {
+    public let url: URL
+    public let httpCode: HttpStatusCode
+    public let headers: [HTTPHeader]
+    public let result: Result<Data, Error>
+    public let delay: TimeInterval
 }
 
-extension ResponseMock {
+public extension ResponseMock {
     var httpResponse: HTTPURLResponse {
         var headerFields: [String: String] = [:]
         headers.forEach { header in
@@ -25,12 +25,12 @@ extension ResponseMock {
         return HTTPURLResponse(url: url, statusCode: httpCode.rawValue, httpVersion: "HTTP/1.1", headerFields: headerFields)!
     }
     
-    init(url: URL = URL.mockURL,
-         path: String,
-         httpCode: HttpStatusCode = .ok,
-         headers: [HTTPHeader] = HTTPHeader.contentType(.json),
-         result: Result<Data, Error>,
-         delay: TimeInterval = 0.1) {
+    public init(url: URL = URL.mockURL,
+                path: String,
+                httpCode: HttpStatusCode = .ok,
+                headers: [HTTPHeader] = HTTPHeader.contentType(.json),
+                result: Result<Data, Error>,
+                delay: TimeInterval = 0.1) {
         self.url = URL(string: path, relativeTo: url)!
         self.httpCode = httpCode
         self.headers = headers

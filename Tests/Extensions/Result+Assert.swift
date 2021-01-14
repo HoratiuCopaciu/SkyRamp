@@ -7,7 +7,7 @@
 
 import XCTest
 
-extension Result where Success == Void {
+public extension Result where Success == Void {
     func assertSuccess() {
         switch self {
         case .success:
@@ -18,7 +18,7 @@ extension Result where Success == Void {
     }
 }
 
-extension Result where Success: Equatable {
+public extension Result where Success: Equatable {
     func assertSuccess(value: Success) {
         switch self {
         case .success(let resultValue):
@@ -29,7 +29,7 @@ extension Result where Success: Equatable {
     }
 }
 
-extension Result {
+public extension Result {
     func assertFailure(_ message: String) {
         switch self {
         case let .success(value):
