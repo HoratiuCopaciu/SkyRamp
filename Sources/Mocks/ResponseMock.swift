@@ -25,12 +25,12 @@ public extension ResponseMock {
         return HTTPURLResponse(url: url, statusCode: httpCode.rawValue, httpVersion: "HTTP/1.1", headerFields: headerFields)!
     }
     
-    public init(url: URL = URL.mockURL,
-                path: String,
-                httpCode: HttpStatusCode = .ok,
-                headers: [HTTPHeader] = HTTPHeader.contentType(.json),
-                result: Result<Data, Error>,
-                delay: TimeInterval = 0.1) {
+    init(url: URL = URL.mockURL,
+         path: String,
+         httpCode: HttpStatusCode = .ok,
+         headers: [HTTPHeader] = HTTPHeader.contentType(.json),
+         result: Result<Data, Error>,
+         delay: TimeInterval = 0.1) {
         self.url = URL(string: path, relativeTo: url)!
         self.httpCode = httpCode
         self.headers = headers
