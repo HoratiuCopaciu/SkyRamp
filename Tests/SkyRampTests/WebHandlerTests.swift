@@ -22,21 +22,16 @@ final class WebHandlerTests: XCTestCase {
     }
     
     private var baseURL: URL!
+    private var configuration: WebHandlerConfiguration!
     private var httpMethod: HttpMethod!
-    private var urlPaths: [String]!
-    private var httpHeaders: [String : String]?
-    private var queryParameters: [String : String]?
     private var expectedStatusCode: Int!
     private var parameterSerializer: WebHandlerParameterSerializer?
     private var responseDeserializer: WebHandlerResponseDeserializer<ResponseStub>!
     private var responseDeserializerCallCount = 0
     private var errorDeserializer: WebHandlerErrorDeserializer?
     
-    private lazy var handler = WebHandler(baseURL: baseURL,
+    private lazy var handler = WebHandler(configuration: configuration,
                                           httpMethod: httpMethod,
-                                          urlPaths: urlPaths,
-                                          httpHeaders: httpHeaders,
-                                          queryParameters: queryParameters,
                                           expectedStatusCode: expectedStatusCode,
                                           parameterSerializer: parameterSerializer,
                                           responseDeserializer: responseDeserializer,
@@ -44,8 +39,8 @@ final class WebHandlerTests: XCTestCase {
 
     override func setUpWithError() throws {
         baseURL = try XCTUnwrap(.init(string: "https://domain.com"))
+        configuration = .init(baseURL: baseURL)
         httpMethod = .get
-        urlPaths = []
         expectedStatusCode = 200
         responseDeserializer = .init(deserialize: { [weak self] _, _ in
             self?.responseDeserializerCallCount += 1
@@ -115,9 +110,10 @@ final class WebHandlerTests: XCTestCase {
     }
     
     func testAsURLRequest() throws {
-        urlPaths = ["first", "second"]
-        queryParameters = ["key": "value"]
-        httpHeaders = ["HeaderKey": "HeaderValue"]
+        configuration = .init(baseURL: baseURL,
+                              urlPaths: ["first", "second"],
+                              httpHeaders: ["HeaderKey": "HeaderValue"],
+                              queryParameters: ["key": "value"])
         let bodyData = Data()
         parameterSerializer = .init(contentType: .json, serialize: {
             bodyData
@@ -125,8 +121,9 @@ final class WebHandlerTests: XCTestCase {
 
         let request = try handler.asURLRequest()
         
-        let contentTypeHeaders = ["Content-Type": "application/json"]
-        httpHeaders?.merge(contentTypeHeaders, uniquingKeysWith: { current, _ in current })
+        let contentType = ["Content-Type": "application/json"]
+        var httpHeaders = configuration.httpHeaders
+        httpHeaders?.merge(contentType, uniquingKeysWith: { current, _ in current })
 
         XCTAssertEqual(request.url?.absoluteString, "https://domain.com/first/second?key=value")
         XCTAssertEqual(request.allHTTPHeaderFields, httpHeaders)

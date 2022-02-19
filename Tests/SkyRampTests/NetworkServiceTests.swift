@@ -86,7 +86,7 @@ final class NetworkServiceTests: XCTestCase {
         }
         
         var responseDeserializerCallCount = 0
-        let handler: WebHandler<String> = .get(baseURL: baseURL,
+        let handler: WebHandler<String> = .get(configuration: WebHandlerConfiguration(baseURL: baseURL),
                                                responseDeserializer: .init(deserialize: { statusCode, data in
             responseDeserializerCallCount += 1
             XCTAssertEqual(statusCode, networkResponse?.statusCode)
@@ -111,18 +111,15 @@ final class NetworkServiceTests: XCTestCase {
         let baseURL = try XCTUnwrap(URL(string: "https://domain.com"))
         let error = MockError()
         var responseDeserializerCallCount = 0
-        let handler = WebHandler.init(baseURL: baseURL,
-                                      httpMethod: .post,
-                                      urlPaths: [],
-                                      httpHeaders: nil,
-                                      queryParameters: nil,
-                                      expectedStatusCode: 200,
-                                      parameterSerializer: .init(contentType: .json,
-                                                                 serialize: { throw error }),
-                                      responseDeserializer: .init(deserialize: { _, _ in
+        let handler = WebHandler(configuration: WebHandlerConfiguration(baseURL: baseURL),
+                                 httpMethod: .post,
+                                 expectedStatusCode: 200,
+                                 parameterSerializer: .init(contentType: .json,
+                                                            serialize: { throw error }),
+                                 responseDeserializer: .init(deserialize: { _, _ in
             responseDeserializerCallCount += 1
         }),
-                                      errorDeserializer: nil)
+                                 errorDeserializer: nil)
         
         
         var executeCallCount = 0

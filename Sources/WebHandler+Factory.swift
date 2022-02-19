@@ -9,19 +9,13 @@ import Foundation
 
 public extension WebHandler {
     static func get(
-        baseURL: URL,
-        urlPaths: [String] = [],
-        httpHeaders: [String: String]? = nil,
-        queryParameters: [String: String]? = nil,
+        configuration: WebHandlerConfigurable,
         expectedStatusCode: Int = 200,
         responseDeserializer: WebHandlerResponseDeserializer<Response>,
         errorDeserializer: WebHandlerErrorDeserializer? = nil
     ) -> WebHandler<Response> {
-        .init(baseURL: baseURL,
+        .init(configuration: configuration,
               httpMethod: .get,
-              urlPaths: urlPaths,
-              httpHeaders: httpHeaders,
-              queryParameters: queryParameters,
               expectedStatusCode: expectedStatusCode,
               parameterSerializer: .empty,
               responseDeserializer: responseDeserializer,
@@ -29,20 +23,14 @@ public extension WebHandler {
     }
     
     static func postJSON<Parameters: Encodable>(
-        baseURL: URL,
-        urlPaths: [String] = [],
-        httpHeaders: [String: String]? = nil,
-        queryParameters: [String: String]? = nil,
+        configuration: WebHandlerConfigurable,
         parameters: Parameters,
         expectedStatusCode: Int = 200,
         responseDeserializer: WebHandlerResponseDeserializer<Response>,
         errorDeserializer: WebHandlerErrorDeserializer? = nil
     ) -> WebHandler<Response> {
-        .init(baseURL: baseURL,
+        .init(configuration: configuration,
               httpMethod: .post,
-              urlPaths: urlPaths,
-              httpHeaders: httpHeaders,
-              queryParameters: queryParameters,
               expectedStatusCode: expectedStatusCode,
               parameterSerializer: .json(body: parameters),
               responseDeserializer: responseDeserializer,
@@ -50,20 +38,14 @@ public extension WebHandler {
     }
     
     static func putJSON<Parameters: Encodable>(
-        baseURL: URL,
-        urlPaths: [String] = [],
-        httpHeaders: [String: String]? = nil,
-        queryParameters: [String: String]? = nil,
+        configuration: WebHandlerConfigurable,
         parameters: Parameters,
         expectedStatusCode: Int = 200,
         responseDeserializer: WebHandlerResponseDeserializer<Response>,
         errorDeserializer: WebHandlerErrorDeserializer? = nil
     ) -> WebHandler<Response> {
-        .init(baseURL: baseURL,
+        .init(configuration: configuration,
               httpMethod: .put,
-              urlPaths: urlPaths,
-              httpHeaders: httpHeaders,
-              queryParameters: queryParameters,
               expectedStatusCode: expectedStatusCode,
               parameterSerializer: .json(body: parameters),
               responseDeserializer: responseDeserializer,
@@ -71,20 +53,14 @@ public extension WebHandler {
     }
     
     static func patchJSON<Parameters: Encodable>(
-        baseURL: URL,
-        urlPaths: [String] = [],
-        httpHeaders: [String: String]? = nil,
-        queryParameters: [String: String]? = nil,
+        configuration: WebHandlerConfigurable,
         parameters: Parameters,
         expectedStatusCode: Int = 200,
         responseDeserializer: WebHandlerResponseDeserializer<Response>,
         errorDeserializer: WebHandlerErrorDeserializer? = nil
     ) -> WebHandler<Response> {
-        .init(baseURL: baseURL,
+        .init(configuration: configuration,
               httpMethod: .patch,
-              urlPaths: urlPaths,
-              httpHeaders: httpHeaders,
-              queryParameters: queryParameters,
               expectedStatusCode: expectedStatusCode,
               parameterSerializer: .json(body: parameters),
               responseDeserializer: responseDeserializer,
@@ -92,19 +68,13 @@ public extension WebHandler {
     }
     
     static func delete(
-        baseURL: URL,
-        urlPaths: [String] = [],
-        httpHeaders: [String: String]? = nil,
-        queryParameters: [String: String]? = nil,
+        configuration: WebHandlerConfigurable,
         expectedStatusCode: Int = 200,
         responseDeserializer: WebHandlerResponseDeserializer<Response>,
         errorDeserializer: WebHandlerErrorDeserializer? = nil
     ) -> WebHandler<Response> {
-        .init(baseURL: baseURL,
+        .init(configuration: configuration,
               httpMethod: .delete,
-              urlPaths: urlPaths,
-              httpHeaders: httpHeaders,
-              queryParameters: queryParameters,
               expectedStatusCode: expectedStatusCode,
               parameterSerializer: .empty,
               responseDeserializer: responseDeserializer,

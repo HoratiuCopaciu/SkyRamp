@@ -15,6 +15,13 @@ public enum HttpMethod: String {
     case delete = "DELETE"
 }
 
+public protocol WebHandlerConfigurable {
+    var baseURL: URL { get }
+    var urlPaths: [String] { get }
+    var httpHeaders: [String: String]? { get }
+    var queryParameters: [String: String]? { get }
+}
+
 open class WebHandler<Response> {
     private let baseURL: URL
     private let urlPaths: [String]
@@ -26,20 +33,17 @@ open class WebHandler<Response> {
     private let responseDeserializer: WebHandlerResponseDeserializer<Response>
     private let errorDeserializer: WebHandlerErrorDeserializer?
     
-    public init(baseURL: URL,
+    public init(configuration: WebHandlerConfigurable,
                 httpMethod: HttpMethod,
-                urlPaths: [String],
-                httpHeaders: [String: String]?,
-                queryParameters: [String: String]?,
                 expectedStatusCode: Int,
                 parameterSerializer: WebHandlerParameterSerializer?,
                 responseDeserializer: WebHandlerResponseDeserializer<Response>,
                 errorDeserializer: WebHandlerErrorDeserializer?) {
-        self.baseURL = baseURL
+        baseURL = configuration.baseURL
+        urlPaths = configuration.urlPaths
+        httpHeaders = configuration.httpHeaders
+        queryParameters = configuration.queryParameters
         self.httpMethod = httpMethod
-        self.urlPaths = urlPaths
-        self.httpHeaders = httpHeaders
-        self.queryParameters = queryParameters
         self.statusCodeValidator = { $0 == expectedStatusCode }
         self.parameterSerializer = parameterSerializer
         self.responseDeserializer = responseDeserializer
