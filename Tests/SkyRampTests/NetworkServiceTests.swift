@@ -8,6 +8,7 @@
 import Foundation
 import XCTest
 import SkyRamp
+import SkyRampMocks
 
 final class NetworkServiceTests: XCTestCase {
     private var networkTaskProvider: NetworkTaskProviderProtocolMock!

@@ -5,8 +5,9 @@
 //  Created by Horatiu Copaciu on 18.02.2022.
 //
 
-import SkyRamp
 import XCTest
+import SkyRamp
+import SkyRampMocks
 
 final class WebHandlerTests: XCTestCase {
     private struct ResponseStub: Decodable, Equatable {
