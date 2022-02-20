@@ -18,6 +18,14 @@ public class DispatchQueueProtocolMock: DispatchQueueProtocol {
         if let asyncHandler = asyncHandler {
             asyncHandler(group, qos, flags, work)
         }
-        
+    }
+    
+    public private(set) var asyncAfterCallCount = 0
+    public var asyncAfterHandler: ((DispatchTime, DispatchWorkItem) -> Void)?
+    public func asyncAfter(deadline: DispatchTime, execute: DispatchWorkItem) {
+        asyncAfterCallCount += 1
+        if let asyncAfterHandler = asyncAfterHandler {
+            asyncAfterHandler(deadline, execute)
+        }
     }
 }

@@ -12,6 +12,7 @@ public protocol DispatchQueueProtocol {
                qos: DispatchQoS,
                flags: DispatchWorkItemFlags,
                execute work: @escaping @convention(block) () -> Void)
+    func asyncAfter(deadline: DispatchTime, execute: DispatchWorkItem)
 }
 
 public extension DispatchQueueProtocol {
