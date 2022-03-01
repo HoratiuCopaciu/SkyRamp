@@ -12,11 +12,11 @@ public final class URLRequestConvertibleMock: URLRequestConvertible {
     public init() { }
 
     public private(set) var asURLRequestCallCount = 0
-    public var asURLRequestHandler: (() throws -> (URLRequest))?
-    public func asURLRequest() throws -> URLRequest {
+    public var asURLRequestHandler: ((URL) throws -> (URLRequest))?
+    public func asURLRequest(baseURL: URL) throws -> URLRequest {
         asURLRequestCallCount += 1
         if let asURLRequestHandler = asURLRequestHandler {
-            return try asURLRequestHandler()
+            return try asURLRequestHandler(baseURL)
         }
         fatalError("asURLRequestHandler returns can't have a default value thus its handler must be set")
     }

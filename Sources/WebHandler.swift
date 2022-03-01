@@ -16,14 +16,12 @@ public enum HttpMethod: String {
 }
 
 public protocol WebHandlerConfigurable {
-    var baseURL: URL { get }
     var urlPaths: [String] { get }
     var httpHeaders: [String: String]? { get }
     var queryParameters: [String: String]? { get }
 }
 
 open class WebHandler<Response> {
-    private let baseURL: URL
     private let urlPaths: [String]
     private let httpMethod: HttpMethod
     private let httpHeaders: [String: String]?
@@ -33,16 +31,17 @@ open class WebHandler<Response> {
     private let responseDeserializer: WebHandlerResponseDeserializer<Response>
     private let errorDeserializer: WebHandlerErrorDeserializer?
     
-    public init(configuration: WebHandlerConfigurable,
+    public init(urlPaths: [String],
+                httpHeaders: [String: String]?,
+                queryParameters: [String: String]?,
                 httpMethod: HttpMethod,
                 expectedStatusCode: Int,
                 parameterSerializer: WebHandlerParameterSerializer?,
                 responseDeserializer: WebHandlerResponseDeserializer<Response>,
                 errorDeserializer: WebHandlerErrorDeserializer?) {
-        baseURL = configuration.baseURL
-        urlPaths = configuration.urlPaths
-        httpHeaders = configuration.httpHeaders
-        queryParameters = configuration.queryParameters
+        self.urlPaths = urlPaths
+        self.httpHeaders = httpHeaders
+        self.queryParameters = queryParameters
         self.httpMethod = httpMethod
         self.statusCodeValidator = { $0 == expectedStatusCode }
         self.parameterSerializer = parameterSerializer
@@ -50,23 +49,41 @@ open class WebHandler<Response> {
         self.errorDeserializer = errorDeserializer
     }
     
+    public convenience init(configuration: WebHandlerConfigurable,
+                            httpMethod: HttpMethod,
+                            expectedStatusCode: Int,
+                            parameterSerializer: WebHandlerParameterSerializer?,
+                            responseDeserializer: WebHandlerResponseDeserializer<Response>,
+                            errorDeserializer: WebHandlerErrorDeserializer?) {
+        self.init(urlPaths: configuration.urlPaths,
+                  httpHeaders: configuration.httpHeaders,
+                  queryParameters: configuration.queryParameters,
+                  httpMethod: httpMethod,
+                  expectedStatusCode: expectedStatusCode,
+                  parameterSerializer: parameterSerializer,
+                  responseDeserializer: responseDeserializer,
+                  errorDeserializer: errorDeserializer)
+    }
+    
     open func handle(_ data: Data?, _ response: URLResponse?, _ error: Error?) -> Result<Response, Error> {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            let error = error ?? NSError.error(domain: String(describing: self))
+            return .failure(error)
+        }
+        
         let result: Result<Response, Error>
         
-        if let httpResponse = response as? HTTPURLResponse,
-           validate(statusCode: httpResponse.statusCode) {
-            do {
-                let value = try deserialize(httpResponse.statusCode, data)
-                result = .success(value)
-            } catch {
-                let deserializedError = deserializeError(httpResponse.statusCode, data, error)
-                result = .failure(deserializedError ?? error)
-            }
+        if validate(statusCode: httpResponse.statusCode) {
+            result = deserialize(httpResponse.statusCode, data)
         } else {
-            let error = error ?? NSError(domain: String(describing: self), code: 0, userInfo: nil)
-            result = .failure(error)
+            if let deserializedError = deserializeError(httpResponse.statusCode, data, error) {
+                result = .failure(deserializedError)
+            } else {
+                let error = error ?? NSError.error(domain: String(describing: self))
+                result = .failure(error)
+            }
         }
-
+        
         return result
     }
 }
@@ -77,7 +94,7 @@ extension WebHandler: URLRequestConvertible {
         case contentType = "Content-Type"
     }
     
-    public func asURLRequest() throws -> URLRequest {
+    public func asURLRequest(baseURL: URL) throws -> URLRequest {
         var url = baseURL.appendingPathComponent(NSString.path(withComponents: urlPaths))
         
         if let parameters = queryParameters, !parameters.isEmpty {
@@ -105,8 +122,15 @@ extension WebHandler: URLRequestConvertible {
 }
 
 private extension WebHandler {
-    func deserialize(_ statusCode: Int, _ data: Data?) throws -> Response {
-        try responseDeserializer.deserialize(statusCode, data)
+    func deserialize(_ statusCode: Int, _ data: Data?) -> Result<Response, Error> {
+        let result: Result<Response, Error>
+        do {
+            let value = try responseDeserializer.deserialize(statusCode, data)
+            result = .success(value)
+        } catch {
+            result = .failure(error)
+        }
+        return result
     }
     
     func deserializeError(_ statusCode: Int, _ data: Data?, _ error: Error?) -> Error? {
@@ -115,5 +139,13 @@ private extension WebHandler {
     
     func validate(statusCode: Int) -> Bool {
         statusCodeValidator(statusCode)
+    }
+}
+
+private extension NSError {
+    static func error(domain: String,
+                      code: Int = 0,
+                      userInfo: [String: Any]? = nil) -> NSError {
+        NSError(domain: domain, code: code, userInfo: userInfo)
     }
 }

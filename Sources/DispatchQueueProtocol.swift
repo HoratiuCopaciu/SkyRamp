@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public protocol DispatchQueueProtocol {
     func async(group: DispatchGroup?,
@@ -13,6 +14,8 @@ public protocol DispatchQueueProtocol {
                flags: DispatchWorkItemFlags,
                execute work: @escaping @convention(block) () -> Void)
     func asyncAfter(deadline: DispatchTime, execute: DispatchWorkItem)
+    
+    func receive<Output, Failure: Error>(publisher: AnyPublisher<Output, Failure>) -> AnyPublisher<Output, Failure>
 }
 
 public extension DispatchQueueProtocol {
@@ -21,4 +24,16 @@ public extension DispatchQueueProtocol {
     }
 }
 
-extension DispatchQueue: DispatchQueueProtocol {}
+extension DispatchQueue: DispatchQueueProtocol {
+    public func receive<Output, Failure: Error>(publisher: AnyPublisher<Output, Failure>) -> AnyPublisher<Output, Failure> {
+        publisher
+            .receive(on: self, options: nil)
+            .eraseToAnyPublisher()
+    }
+}
+
+extension AnyPublisher {
+    func receive(on dispatchQueue: DispatchQueueProtocol) -> Self {
+        dispatchQueue.receive(publisher: self)
+    }
+}

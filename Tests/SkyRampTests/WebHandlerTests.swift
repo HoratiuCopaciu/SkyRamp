@@ -39,7 +39,7 @@ final class WebHandlerTests: XCTestCase {
 
     override func setUpWithError() throws {
         baseURL = try XCTUnwrap(.init(string: "https://domain.com"))
-        configuration = .init(baseURL: baseURL)
+        configuration = .init()
         httpMethod = .get
         expectedStatusCode = 200
         responseDeserializer = .init(deserialize: { [weak self] _, _ in
@@ -110,8 +110,7 @@ final class WebHandlerTests: XCTestCase {
     }
     
     func testAsURLRequest() throws {
-        configuration = .init(baseURL: baseURL,
-                              urlPaths: ["first", "second"],
+        configuration = .init(urlPaths: ["first", "second"],
                               httpHeaders: ["HeaderKey": "HeaderValue"],
                               queryParameters: ["key": "value"])
         let bodyData = Data()
@@ -119,7 +118,7 @@ final class WebHandlerTests: XCTestCase {
             bodyData
         })
 
-        let request = try handler.asURLRequest()
+        let request = try handler.asURLRequest(baseURL: baseURL)
         
         let contentType = ["Content-Type": "application/json"]
         var httpHeaders = configuration.httpHeaders

@@ -7,6 +7,7 @@
 
 import Foundation
 import SkyRamp
+import Combine
 
 public class DispatchQueueProtocolMock: DispatchQueueProtocol {
     public init() { }
@@ -27,5 +28,15 @@ public class DispatchQueueProtocolMock: DispatchQueueProtocol {
         if let asyncAfterHandler = asyncAfterHandler {
             asyncAfterHandler(deadline, execute)
         }
+    }
+    
+    public private(set) var receiveCallCount = 0
+    public var receiveHandler: ((Any) -> (Any))?
+    public func receive<Output, Failure: Error>(publisher: AnyPublisher<Output, Failure>) -> AnyPublisher<Output, Failure> {
+        receiveCallCount += 1
+        if let receiveHandler = receiveHandler {
+            return receiveHandler(publisher) as! AnyPublisher<Output, Failure>
+        }
+        fatalError("receiveHandler returns can't have a default value thus its handler must be set")
     }
 }

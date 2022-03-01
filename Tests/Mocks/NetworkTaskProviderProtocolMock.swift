@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 import SkyRamp
 
 public final class NetworkTaskProviderProtocolMock: NetworkTaskProviderProtocol {
@@ -19,6 +20,16 @@ public final class NetworkTaskProviderProtocolMock: NetworkTaskProviderProtocol 
             return networkDataTaskHandler(request, completion)
         }
         fatalError("networkDataTaskHandler returns can't have a default value thus its handler must be set")
+    }
+    
+    public private(set) var publisherCallCount = 0
+    public var publisherHandler: ((URLRequest) -> (AnyPublisher<(data: Data, response: URLResponse), URLError>))?
+    public func publisher(for request: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
+        publisherCallCount += 1
+        if let publisherHandler = publisherHandler {
+            return publisherHandler(request)
+        }
+        fatalError("publisherHandler returns can't have a default value thus its handler must be set")
     }
 }
 

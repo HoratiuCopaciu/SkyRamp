@@ -9,14 +9,18 @@ import Foundation
 import XCTest
 import SkyRamp
 import SkyRampMocks
+import Combine
 
 final class NetworkServiceTests: XCTestCase {
+    private var baseURL: URL!
     private var networkTaskProvider: NetworkTaskProviderProtocolMock!
     private var dispatchQueue: DispatchQueueProtocolMock!
-    private lazy var service = NetworkService(networkTaskProvider: networkTaskProvider,
+    private lazy var service = NetworkService(baseURL: baseURL,
+                                              networkTaskProvider: networkTaskProvider,
                                               dispatchQueue: dispatchQueue)
     
     override func setUpWithError() throws {
+        baseURL = try XCTUnwrap(.init(string: "https://domain.com"))
         networkTaskProvider = .init()
         dispatchQueue = .init()
         dispatchQueue.asyncHandler = { _, _, _, block in
@@ -25,7 +29,6 @@ final class NetworkServiceTests: XCTestCase {
     }
     
     func testExecuteRequestFailure() throws {
-        let baseURL = try XCTUnwrap(URL(string: "https://domain.com"))
         let request = URLRequest(url: baseURL)
         let mockError = MockError()
         let task = NetworkTaskMock()
@@ -47,7 +50,6 @@ final class NetworkServiceTests: XCTestCase {
     }
     
     func testExecuteRequestWithResponse() throws {
-        let baseURL = try XCTUnwrap(URL(string: "https://domain.com"))
         let request = URLRequest(url: baseURL)
         let networkData = Data()
         let networkResponse = HTTPURLResponse(url: baseURL,
@@ -73,12 +75,11 @@ final class NetworkServiceTests: XCTestCase {
     }
     
     func testExecuteHandlerSuccess() throws {
-        let baseURL = try XCTUnwrap(URL(string: "https://domain.com"))
         let networkData = Data()
-        let networkResponse = HTTPURLResponse(url: baseURL,
-                                              statusCode: 200,
-                                              httpVersion: "HTTP/1.1",
-                                              headerFields: nil)
+        let networkResponse = try XCTUnwrap(HTTPURLResponse(url: baseURL,
+                                                            statusCode: 200,
+                                                            httpVersion: "HTTP/1.1",
+                                                            headerFields: nil))
         let task = NetworkTaskMock()
         networkTaskProvider.networkDataTaskHandler = { _, completion in
             completion(networkData, networkResponse, nil)
@@ -86,10 +87,10 @@ final class NetworkServiceTests: XCTestCase {
         }
         
         var responseDeserializerCallCount = 0
-        let handler: WebHandler<String> = .get(configuration: WebHandlerConfiguration(baseURL: baseURL),
+        let handler: WebHandler<String> = .get(configuration: WebHandlerConfiguration(),
                                                responseDeserializer: .init(deserialize: { statusCode, data in
             responseDeserializerCallCount += 1
-            XCTAssertEqual(statusCode, networkResponse?.statusCode)
+            XCTAssertEqual(statusCode, networkResponse.statusCode)
             XCTAssertEqual(data, networkData)
             return "String"
         }))
@@ -108,10 +109,9 @@ final class NetworkServiceTests: XCTestCase {
     }
     
     func testExecuteHandlerFailure() throws {
-        let baseURL = try XCTUnwrap(URL(string: "https://domain.com"))
         let error = MockError()
         var responseDeserializerCallCount = 0
-        let handler = WebHandler(configuration: WebHandlerConfiguration(baseURL: baseURL),
+        let handler = WebHandler(configuration: WebHandlerConfiguration(),
                                  httpMethod: .post,
                                  expectedStatusCode: 200,
                                  parameterSerializer: .init(contentType: .json,

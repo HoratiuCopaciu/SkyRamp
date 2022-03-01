@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SkyRamp",
-    platforms: [.iOS(.v12)],
+    platforms: [.iOS(.v13), .macOS(.v10_15)],
     products: [
         .library(
             name: "SkyRamp",
